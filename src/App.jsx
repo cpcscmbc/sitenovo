@@ -26,7 +26,7 @@ import {
 
 // Importando as imagens
 import electricalInfrastructureImage from './assets/electrical_infrastructure.png';
-import rappelInstallationImage from './assets/rappel_installation.png';
+import rappelInstallationImage from './assets/rappel_installation_single.png';
 import cleaningBagImage from './assets/cleaning_bag.png';
 
 import drainImage from './assets/x5MIqG8rR7ac.png';
@@ -34,28 +34,43 @@ import serviceImage from './assets/Hf8bihmGaDKB.jpg';
 import heroImage from './assets/WTz0HU50nBEu.jpg';
 
 function App() {
-  const [testimonials, setTestimonials] = useState([
-    {
-      name: "Carlos Silva",
-      text: "Atendimento diferenciado. Os profissionais são muito cordiais e realizaram o serviço com perfeição, sem contar o valor abaixo do mercado. Super recomendo!",
-      rating: 5
-    },
-    {
-      name: "Ana Santos",
-      text: "Serviço top, alta qualidade. O atendimento foi ótimo, o serviço muito profissional e rápido. O pós venda também foi excelente.",
-      rating: 5
-    },
-    {
-      name: "João Oliveira",
-      text: "Ficamos muito satisfeitos com a ClimaTech. Eles foram atenciosos, solícitos, caprichosos, além de muito educados na instalação dos A/C.",
-      rating: 5
-    },
-    {
-      name: "Maria Costa",
-      text: "Trabalho feito com muita qualidade, honestidade e transparência. Em meio a tantos problemas no mercado, temos que elogiar quem faz seu serviço com maestria.",
-      rating: 5
+  // Função para carregar depoimentos do localStorage
+  const loadTestimonials = () => {
+    try {
+      const saved = localStorage.getItem('testimonials');
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar depoimentos:', error);
     }
-  ]);
+    
+    // Depoimentos padrão se não houver dados salvos
+    return [
+      {
+        name: "Carlos Silva",
+        text: "Atendimento diferenciado. Os profissionais são muito cordiais e realizaram o serviço com perfeição, sem contar o valor abaixo do mercado. Super recomendo!",
+        rating: 5
+      },
+      {
+        name: "Ana Santos",
+        text: "Serviço top, alta qualidade. O atendimento foi ótimo, o serviço muito profissional e rápido. O pós venda também foi excelente.",
+        rating: 5
+      },
+      {
+        name: "João Oliveira",
+        text: "Ficamos muito satisfeitos com a ClimaTech. Eles foram atenciosos, solícitos, caprichosos, além de muito educados na instalação dos A/C.",
+        rating: 5
+      },
+      {
+        name: "Maria Costa",
+        text: "Trabalho feito com muita qualidade, honestidade e transparência. Em meio a tantos problemas no mercado, temos que elogiar quem faz seu serviço com maestria.",
+        rating: 5
+      }
+    ];
+  };
+
+  const [testimonials, setTestimonials] = useState(loadTestimonials);
 
   const [newTestimonialName, setNewTestimonialName] = useState('');
   const [newTestimonialText, setNewTestimonialText] = useState('');
@@ -65,16 +80,39 @@ function App() {
       alert('Por favor, preencha seu nome e seu depoimento.');
       return;
     }
-    setTestimonials([
-      ...testimonials,
-      { name: newTestimonialName, text: newTestimonialText, rating: 5 } // Defaulting to 5 stars for new testimonials
-    ]);
+    
+    const newTestimonial = { 
+      name: newTestimonialName, 
+      text: newTestimonialText, 
+      rating: 5 
+    };
+    
+    const updatedTestimonials = [...testimonials, newTestimonial];
+    
+    // Salvar no localStorage
+    try {
+      localStorage.setItem('testimonials', JSON.stringify(updatedTestimonials));
+    } catch (error) {
+      console.error('Erro ao salvar depoimento:', error);
+    }
+    
+    setTestimonials(updatedTestimonials);
     setNewTestimonialName('');
     setNewTestimonialText('');
+    
+    alert('Depoimento adicionado com sucesso!');
   };
 
   const handleDeleteTestimonial = (index) => {
     const updatedTestimonials = testimonials.filter((_, i) => i !== index);
+    
+    // Salvar no localStorage
+    try {
+      localStorage.setItem('testimonials', JSON.stringify(updatedTestimonials));
+    } catch (error) {
+      console.error('Erro ao salvar depoimentos:', error);
+    }
+    
     setTestimonials(updatedTestimonials);
   };
 
@@ -380,7 +418,7 @@ function App() {
           </div>
           
           <div className="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
-            <p>&copy; 2024 ClimaTech. Todos os direitos reservados.</p>
+            <p>Estamos a disposição, com profissionais capacitados e de confiança.</p>
           </div>
         </div>
       </footer>
